@@ -5,7 +5,7 @@ export default defineConfig(({ command }) => {
   const isProduction = command === 'build';
   
   return {
-    base: isProduction ? '/bill-receipt-generator/' : '/',
+    base: '/',
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('.', import.meta.url)),
