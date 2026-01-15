@@ -1,6 +1,7 @@
 export interface ReceiptData {
   template: string;
   brand: string;
+  stationPreset: string;
   stationName: string;
   stationAddress: string;
   receiptNo: string;
@@ -11,5 +12,6 @@ export interface ReceiptData {
   volume: number;
   amount: number;
   vehicleNo: string;
+  customerName: string;
   paymentMode: string;
 }

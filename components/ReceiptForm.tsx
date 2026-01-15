@@ -34,6 +34,7 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onInputChange, onReset 
                     >
                         <option>Classic Printer</option>
                         <option>Modern Digital</option>
+                        <option>Colorful Print</option>
                     </select>
                 </div>
             </FormSection>
@@ -58,7 +59,29 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onInputChange, onReset 
                         <option>Jio-BP</option>
                     </select>
                 </div>
-                <InputGroup label="Station Name" name="stationName" value={data.stationName} onChange={onInputChange} containerClassName="sm:col-span-2" />
+                <div className="flex flex-col sm:col-span-2">
+                    <label htmlFor="stationPreset" className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Station Preset</label>
+                    <select
+                        id="stationPreset"
+                        name="stationPreset"
+                        value={data.stationPreset}
+                        onChange={onInputChange}
+                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+                    >
+                        <option>Custom</option>
+                        <option>AVIJIT ENTERPRISES</option>
+                        <option>VB Fuel</option>
+                        <option>Indian Oil Station</option>
+                    </select>
+                </div>
+                <InputGroup 
+                    label="Station Name" 
+                    name="stationName" 
+                    value={data.stationName} 
+                    onChange={onInputChange} 
+                    containerClassName="sm:col-span-2"
+                    disabled={data.stationPreset !== 'Custom'}
+                />
                 <div className="flex flex-col sm:col-span-2">
                     <label htmlFor="stationAddress" className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Station Address</label>
                     <textarea
@@ -67,15 +90,39 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onInputChange, onReset 
                         value={data.stationAddress}
                         onChange={onInputChange}
                         rows={3}
-                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+                        disabled={data.stationPreset !== 'Custom'}
+                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                 </div>
             </FormSection>
             
             <FormSection title="Transaction Details">
-                <InputGroup label="Date" name="date" value={data.date} onChange={onInputChange} />
-                <InputGroup label="Time" name="time" value={data.time} onChange={onInputChange} />
+                <InputGroup label="Receipt No" name="receiptNo" value={data.receiptNo} onChange={onInputChange} containerClassName="sm:col-span-2" />
+                <div className="flex flex-col">
+                    <label htmlFor="date" className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Date</label>
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        value={data.date}
+                        onChange={onInputChange}
+                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+                    />
+                </div>
+                <div className="flex flex-col">
+                    <label htmlFor="time" className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Time</label>
+                    <input
+                        type="time"
+                        id="time"
+                        name="time"
+                        value={data.time}
+                        onChange={onInputChange}
+                        step="1"
+                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+                    />
+                </div>
                 <InputGroup label="Vehicle No" name="vehicleNo" value={data.vehicleNo} onChange={onInputChange} />
+                <InputGroup label="Customer Name" name="customerName" value={data.customerName} onChange={onInputChange} />
                 <div className="flex flex-col">
                     <label htmlFor="paymentMode" className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Payment Mode</label>
                     <select

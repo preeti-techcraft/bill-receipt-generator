@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import { ReceiptData } from '../types';
 import BrandLogo from './BrandLogo';
 import { toWords } from '../utils/numberToWords';
+import { formatDateForDisplay, formatTimeForDisplay } from '../utils/dateFormatter';
+import { ColorfulIndianOilReceipt, ColorfulHPReceipt, ColorfulBharatReceipt, ColorfulGenericReceipt } from './ColorfulReceipts';
 
 // Allow html2canvas to be used from the global scope
 declare const html2canvas: any;
@@ -31,11 +33,11 @@ const ModernReceipt = ({ data }: { data: ReceiptData }) => (
         <div className="py-4 border-b border-slate-200 dark:border-slate-600 text-sm space-y-2">
             <div className="flex justify-between">
                 <span className="text-slate-500 dark:text-slate-400">Date</span>
-                <span className="font-mono font-semibold">{data.date}</span>
+                <span className="font-mono font-semibold">{formatDateForDisplay(data.date)}</span>
             </div>
             <div className="flex justify-between">
                 <span className="text-slate-500 dark:text-slate-400">Time</span>
-                <span className="font-mono font-semibold">{data.time}</span>
+                <span className="font-mono font-semibold">{formatTimeForDisplay(data.time)}</span>
             </div>
              <div className="flex justify-between">
                 <span className="text-slate-500 dark:text-slate-400">Receipt No.</span>
@@ -45,6 +47,12 @@ const ModernReceipt = ({ data }: { data: ReceiptData }) => (
                 <span className="text-slate-500 dark:text-slate-400">Vehicle No.</span>
                 <span className="font-mono font-semibold">{data.vehicleNo}</span>
             </div>
+            {data.customerName && (
+                <div className="flex justify-between">
+                    <span className="text-slate-500 dark:text-slate-400">Customer Name</span>
+                    <span className="font-mono font-semibold">{data.customerName}</span>
+                </div>
+            )}
         </div>
 
         {/* Fuel Details */}
@@ -85,11 +93,10 @@ const IndianOilReceipt = ({ data }: { data: ReceiptData }) => (
     <div className="w-[320px] mx-auto p-3 bg-gradient-to-b from-gray-200 via-gray-100 to-gray-200 text-black font-receipt text-xl shadow-lg leading-relaxed">
         {/* Header */}
         <div className="text-center mb-3">
-            <div className="w-20 h-16 mx-auto mb-2 flex items-center justify-center">
+            <div className="w-40 h-28 mx-auto mb-2 flex items-center justify-center">
                 <BrandLogo brand={data.brand} template={data.template} />
             </div>
-            <p className="font-bold text-2xl">IndianOil</p>
-            <p className="">Welcomes You</p>
+            <p className="font-bold text-lg">WELCOME!!!</p>
         </div>
 
         {/* Transaction Info */}
@@ -113,11 +120,12 @@ const IndianOilReceipt = ({ data }: { data: ReceiptData }) => (
         <div className="my-3 space-y-1">
             <PaddedLine label="Vehicle No" value={data.vehicleNo} />
             <PaddedLine label="Mobile No" value="Not Entered" />
+            {data.customerName && <PaddedLine label="Customer" value={data.customerName} />}
         </div>
 
         <div className="my-3 space-y-1">
-            <PaddedLine label="Date" value={data.date} />
-            <PaddedLine label="Time" value={data.time} />
+            <PaddedLine label="Date" value={formatDateForDisplay(data.date)} />
+            <PaddedLine label="Time" value={formatTimeForDisplay(data.time)} />
         </div>
 
         <div className="my-3 space-y-1">
@@ -150,70 +158,36 @@ const DefaultReceipt = ({ data }: { data: ReceiptData }) => {
                 <p className="uppercase">{data.stationName}</p>
                 <p className="text-sm whitespace-pre-wrap">{data.stationAddress}</p>
             </div>
-            <DashedLine />
-            {/* Transaction Info */}
-            <div>
-                {isHP ? (
-                    <>
-                        <PaddedLine label="Bill No" value={data.receiptNo} />
-                        <PaddedLine label="Trns. ID" value={`00000${data.receiptNo}`.slice(-15)} />
-                    </>
-                ) : (
-                    <PaddedLine label="Receipt No" value={data.receiptNo} />
-                )}
-                <div className="flex justify-between">
-                    <span>Date: {data.date}</span>
-                    <span>Time: {data.time}</span>
-                </div>
-                {!isHP && <PaddedLine label="VEH TYPE" value={data.product.includes('Diesel') ? 'DIESEL' : 'PETROL'} />}
-                <PaddedLine label="VEH NO" value={data.vehicleNo} />
-                {!isHP && <PaddedLine label="CUSTOMER NAME" value="" />}
-            </div>
-            <DashedLine />
+            
+            <PaddedLine label="Receipt No" value={data.receiptNo} />
+            
+            <div className="my-2"></div>
+            
             {/* Fuel Details */}
-            {isHP ? (
-                <div>
-                    <PaddedLine label="Fuel" value={data.product.toUpperCase()} />
-                    <PaddedLine label="Density" value="830.5kg/m3" />
-                    <PaddedLine label="Preset" value={`Rs.${data.amount.toFixed(2)}`} />
-                    <PaddedLine label="Rate" value={`Rs.${data.rate.toFixed(2)}`} />
-                    <PaddedLine label="Sale" value={`Rs.${data.amount.toFixed(2)}`} />
-                    <PaddedLine label="Volume" value={`${data.volume.toFixed(2)}L`} />
-                </div>
-            ) : (
-                <div>
-                    <div className="grid grid-cols-4 gap-1 font-bold">
-                        <span className="col-span-1">PRODUCT</span>
-                        <span className="text-right col-span-1">RATE/LTR</span>
-                        <span className="text-right col-span-1">VOLUME</span>
-                        <span className="text-right col-span-1">AMOUNT</span>
-                    </div>
-                    <div className="grid grid-cols-4 gap-1">
-                        <span className="col-span-1 uppercase">{data.product}</span>
-                        <span className="text-right col-span-1">{data.rate.toFixed(2)}</span>
-                        <span className="text-right col-span-1">{data.volume.toFixed(2)}</span>
-                        <span className="text-right col-span-1 font-bold">{data.amount.toFixed(2)}</span>
-                    </div>
-                </div>
-            )}
-            <DashedLine />
-            {/* Totals */}
-            <div className="my-1">
-                <p className="capitalize">Amount In Words: {toWords(data.amount)} Rupees Only</p>
-                <div className="flex justify-between font-bold">
-                    <span>TOTAL:</span>
-                    <span>Rs.{data.amount.toFixed(2)}</span>
-                </div>
-                <p>Payment Mode: {data.paymentMode}</p>
+            <div className="space-y-0">
+                <PaddedLine label="PRODUCT" value={data.product.toLowerCase()} />
+                <PaddedLine label="RATE/LTR" value={`₹ ${data.rate.toFixed(2)}`} />
+                <PaddedLine label="AMOUNT" value={`₹ ${data.amount.toFixed(0)}`} />
+                <PaddedLine label="VOLUME(LTR.)" value={`${data.volume.toFixed(2)} lt`} />
             </div>
-            <DashedLine />
-            {/* Footer */}
-            <p className="text-center text-xs mt-2 uppercase">
-                {isIndianOil || isBharat
-                    ? 'Save Fuel Yaani Save Money !! Thanks for fuelling with us.'
-                    : 'Thank You! Please Visit Again..'
-                }
-            </p>
+            
+            <div className="my-2"></div>
+            
+            {/* Vehicle Details */}
+            <div className="space-y-0">
+                <PaddedLine label="VEH TYPE" value={data.product.toLowerCase()} />
+                <PaddedLine label="VEH NO" value={data.vehicleNo} />
+                <PaddedLine label="CUSTOMER NAME" value={data.customerName || ''} />
+            </div>
+            
+            <div className="my-2"></div>
+            
+            {/* Date & Time */}
+            <div className="flex justify-between">
+                <span>Date: {formatDateForDisplay(data.date)}</span>
+                <span>Time: {formatTimeForDisplay(data.time)}</span>
+            </div>
+            <PaddedLine label="MODE" value={data.paymentMode.toLowerCase()} />
         </div>
     );
 };
@@ -248,6 +222,18 @@ const ReceiptPreview: React.FC<{ data: ReceiptData }> = ({ data }) => {
         switch (data.template) {
             case 'Modern Digital':
                 receiptContent = <ModernReceipt data={data} />;
+                break;
+            case 'Colorful Print':
+                // Brand-specific colorful receipts
+                if (data.brand === 'Indian Oil') {
+                    receiptContent = <ColorfulIndianOilReceipt data={data} />;
+                } else if (data.brand === 'Hindustan Petroleum') {
+                    receiptContent = <ColorfulHPReceipt data={data} />;
+                } else if (data.brand === 'Bharat Petroleum') {
+                    receiptContent = <ColorfulBharatReceipt data={data} />;
+                } else {
+                    receiptContent = <ColorfulGenericReceipt data={data} />;
+                }
                 break;
             case 'Classic Printer':
             default:

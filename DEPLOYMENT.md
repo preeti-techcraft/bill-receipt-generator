@@ -97,7 +97,36 @@ The following files are configured for GitHub Pages:
 
 The Vite configuration automatically handles different base paths:
 - **Development**: Serves from root path `/` for local development
-- **Production**: Uses `/bill-receipt-generator/` base path for GitHub Pages
+- **Production**: Base path depends on deployment type (see below)
+
+### Deployment Types
+
+The application supports three deployment types:
+
+1. **Docs Folder** (Default - Recommended)
+   - Deploys to `/docs` folder
+   - Base path: `/`
+   - GitHub Pages source: `docs` folder
+   - Set `VITE_DEPLOYMENT_TYPE=docs` in workflow
+
+2. **Root Domain** (`username.github.io`)
+   - Deploys to repository root
+   - Base path: `/`
+   - GitHub Pages source: root or `main` branch
+   - Set `VITE_DEPLOYMENT_TYPE=root` in workflow
+
+3. **Subdirectory** (`username.github.io/repo-name`)
+   - Deploys to subdirectory
+   - Base path: `/bill-receipt-generator/`
+   - GitHub Pages source: `gh-pages` branch
+   - Set `VITE_DEPLOYMENT_TYPE=subdirectory` in workflow
+
+### Current Configuration
+
+The workflow is configured for **docs folder** deployment by default. To change:
+1. Edit `.github/workflows/deploy.yml`
+2. Update `VITE_DEPLOYMENT_TYPE` environment variable
+3. Update `destination_dir` in the deploy step (or remove for root deployment)
 
 ## Security Note
 

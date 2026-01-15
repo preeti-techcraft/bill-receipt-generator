@@ -8,23 +8,25 @@ import { AuthProvider } from './contexts/AuthContext';
 
 const generateInitialData = (): ReceiptData => {
   const now = new Date();
-  const date = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-  const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const date = now.toISOString().split('T')[0]; // YYYY-MM-DD format for date input
+  const time = now.toTimeString().split(' ')[0]; // HH:MM:SS format for time input
   const receiptNo = String(Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000);
 
   return {
     template: 'Classic Printer',
     brand: 'Indian Oil',
+    stationPreset: 'Custom',
     stationName: 'Indian Oil',
     stationAddress: '123, Main Road\nNew Delhi, 110001',
     receiptNo: `${receiptNo}-ORGNL`,
     date: date,
     time: time,
-    product: 'Diesel',
+    product: 'Petrol',
     rate: 94.72,
     volume: 10.56,
     amount: 1000.00,
     vehicleNo: 'Not Entered',
+    customerName: 'Not Entered',
     paymentMode: 'Cash',
   };
 };
@@ -65,6 +67,34 @@ const BillGeneratorApp: React.FC = () => {
           'Jio-BP': 'Jio-BP',
         };
         return { ...prevData, brand: value, stationName: brandStationNameMap[value] || value };
+      }
+
+      if (name === 'stationPreset') {
+        // Station presets from the images
+        const stationPresets: { [key: string]: { name: string; address: string } } = {
+          'AVIJIT ENTERPRISES': {
+            name: 'AVIJIT ENTERPRISES',
+            address: 'V-MANGER, GURGAON ROAD\nFARIDABAD HR'
+          },
+          'VB Fuel': {
+            name: 'VB Fuel',
+            address: 'Faridabad-Gurgaon Badhkal Rd'
+          },
+          'Indian Oil Station': {
+            name: 'Indian Oil',
+            address: 'TEL NO:\nFCC ID:\nFIP NO:'
+          },
+          'Custom': {
+            name: prevData.stationName,
+            address: prevData.stationAddress
+          }
+        };
+
+        const preset = stationPresets[value];
+        if (preset && value !== 'Custom') {
+          return { ...prevData, stationPreset: value, stationName: preset.name, stationAddress: preset.address };
+        }
+        return { ...prevData, stationPreset: value };
       }
 
       return { ...prevData, [name]: value };
